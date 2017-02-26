@@ -8,18 +8,53 @@
 
 <a href='/'> Home </a>
 
+<br>
+
 <div>
 
-  <ul>
-    {% for x in final %}
-    <li>
+  <table>
+    <tr>
+
+    {% for x in final[0:5] %}
+    <td>
       {{ x['score'] }}
 
       <a href="{{x['url']}}"> {{ x['title'] }} </a>
 
-    </li><br>
+    </td>
     {% endfor %}
-  </ul>
+
+  </tr>
+  <br>
+  <tr>
+
+  {% for x in final[4:9] %}
+  <td>
+    {{ x['score'] }}
+
+    <a href="{{x['url']}}"> {{ x['title'] }} </a>
+
+  </td>
+  {% endfor %}
+
+  </tr>
+  <br>
+  <tr>
+
+  {% for x in final[9:14] %}
+  <td>
+    {{ x['score'] }}
+
+    <a href="{{x['url']}}"> {{ x['title'] }} </a>
+
+  </td>
+  {% endfor %}
+
+</tr>
+
+
+  </table>
+
 
 </div>
 
@@ -31,4 +66,3 @@
 </body>
 
 </html>
-
