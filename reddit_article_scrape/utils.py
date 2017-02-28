@@ -20,14 +20,7 @@ def get_info():
     if not children:
         return "There was an error", 502
 
-    post_list = []
-
-    for post in children:    
-        posts = {}
-        posts['title'] = post['data']['title']
-        posts['score'] = post['data']['score']
-        posts['url'] = post['data']['url']
-        post_list.append(posts)
+    post_list = [ { key: post['data'][key] for key in post['data'] if key in ('title', 'url', 'score') } for post in children]
 
     final = sorted(post_list, key=lambda k: k['score'], reverse=True)
 
