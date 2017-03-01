@@ -1,5 +1,4 @@
 from reddit_article_scrape import db, bcrypt, login_manager
-from sqlalchemy.ext.hybrid import hybrid_property
 from flask_login import UserMixin
 
 
