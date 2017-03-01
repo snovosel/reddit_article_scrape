@@ -1,29 +1,17 @@
 <!DOCTYPE html>
 
 <head>
-  <title> Top Posts </title>
+  <title> Reddit Scrape Log In </title>
 </head>
 
 <body>
-
-<div>
-  <form action='/result' method='POST'>
-    <p> enter your desired sub </p>
-    <input type='text' name='sub'>
-    <input type='submit' name='my-form' value='send'>
-
-  <br>
-
-    <p> enter your email </p>
-
-    <input type='text' name='email'>
-
+  <form action='' method='POST'>
+    <div> {{form.username.label}}: <br> {{form.username}} </div>
+    <div> {{form.password.label}}: <br> {{form.password}} </div>
+    <p><input action='' type='submit' value='Login'></p>
   </form>
 
 
-</div>
-
-</body>
-
-</html>
-
+  <div>
+    <p><a href='/register'> Register </a></p>
+  </div>
