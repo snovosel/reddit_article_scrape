@@ -6,6 +6,10 @@
 
 <body>
 
+{% if current_user.is_authenticated %}
+<p> Top Posts for {{ current_user.username }} </p>
+{% endif %}
+
 <a href='/subchoice'> Home </a>
 
 <br>
@@ -21,6 +25,9 @@
 
       <a href="{{x['url']}}"> {{ x['title'] }} </a>
 
+      <form action='' method='POST'>
+        
+      </form>
     </td>
     {% endfor %}
 

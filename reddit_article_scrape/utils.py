@@ -3,8 +3,8 @@ import requests
 from flask_mail import Message
 from reddit_article_scrape import mail, db
 from reddit_article_scrape.forms import LoginForm, RegistrationForm
-from reddit_article_scrape.models import User
-from flask_login import login_required, login_user, logout_user
+from reddit_article_scrape.models import User, Favorite
+from flask_login import login_required, login_user, logout_user, current_user
 
 
 
@@ -28,6 +28,12 @@ def get_info():
 
     final = sorted(post_list, key=lambda k: k['score'], reverse=True)
 
+    for post in final:
+        fav= Favorite(title=post.get('title'), url=post.get('url'), score=post.get('score'), user_id=current_user.id)
+        db.session.add(fav)
+        db.session.commit()
+
+
     try:
         send_mail(email, final)
     except Exception:
@@ -35,7 +41,6 @@ def get_info():
 
 
     return render_template('result.html', final=final)
-
 
 
 def login():

@@ -6,6 +6,12 @@
 
 <body>
 
+{% if current_user.is_authenticated %}
+<p> Welcome, {{ current_user.username }} </p>
+{% endif %}
+
+<a href='/favorites'> Favorites </a>
+
 <div>
   <form action='/result' method='POST'>
     <p> enter your desired sub, NO SPACES! </p>
