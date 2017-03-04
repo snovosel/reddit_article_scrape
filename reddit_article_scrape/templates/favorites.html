@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<head>
+  <title> Favorites </title>
+</head>
+
+<body>
+
+<div>
+
+  <div>
+    {% if current_user.is_authenticated %}
+    <p> Favorites for {{ current_user.username }} </p>
+    {% endif %}
+  </div>
+
+
+  <div>
+    {% for favorite in current_user.favorites.all() %}
+    <ul>
+      <li><a href='{{favorite.url}}'> {{ favorite.title }}  </li>
+    </ul>
+    {% endfor %}
+  </div>
+
+  <a href="/subchoice"> Back </a>
