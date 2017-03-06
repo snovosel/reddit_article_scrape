@@ -7,16 +7,13 @@ from reddit_article_scrape.models import User, Favorite
 from flask_login import login_required, login_user, logout_user, current_user
 
 
-
 def send_mail(email, message):
     msg = Message(recipients=[email])
-    msg.html = render_template('result.html', final=message)
+    msg.html = render_template('result.html', data=message)
     mail.send(msg)
-
 
 def get_info():
     url = request.form.get('sub')
-    email = request.form.get('email')
     if not url:
         abort(404)
     a = requests.get('https://api.reddit.com/r/' + url, headers={'User-agent': 'putain-quoi'}).json()
@@ -25,22 +22,27 @@ def get_info():
         return "There was an error", 502
 
     post_list = [ { key: post['data'][key] for key in post['data'] if key in ('title', 'url', 'score') } for post in children]
-
     final = sorted(post_list, key=lambda k: k['score'], reverse=True)
 
-    for post in final:
-        fav= Favorite(title=post.get('title'), url=post.get('url'), score=post.get('score'), user_id=current_user.id)
-        db.session.add(fav)
-        db.session.commit()
+    return final
 
+def show_posts():
+    data = get_info()
+    email = request.form.get('email')
 
     try:
-        send_mail(email, final)
+        send_mail(email, data)
     except Exception:
         print("Sending mail as failed")
 
+    return render_template('result.html', data=data)
 
-    return render_template('result.html', final=final)
+def save_post(data):
+    data = request.form.get('post')
+    #post = data[post]
+    fav= Favorite(title=data.get('title'), url=data.get('url'), score=data.get('score'), user_id=current_user.id)
+    db.session.add(fav)
+    db.session.commit()
 
 
 def login():
