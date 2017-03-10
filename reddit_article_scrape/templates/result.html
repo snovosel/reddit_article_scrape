@@ -1,82 +1,50 @@
 <!DOCTYPE html>
 
 <head>
-  <title> Top Posts </title>
+  <title> Test Result page </title>
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script type=text/javascript>
+    var $add = $('#add_to_favorites')
     $(function() {
-        $('a#add_to_favorites').bind('click', function() {
-          $.ajax({
-              type : 'GET',
-              url : '/add_to_favorites/<post>'
-          });
-          console.log('working');
+      $('a.add_to_favorites').bind('click', function() {
+
+        var post = $(this).attr('id')
+
+        $.ajax({
+
+            type : 'POST',
+            url : '/add_to_favorites' + '/' + post,
+
         });
+
+        console.log(post)
+
+      });
     });
   </script>
-</head>
 
+</head>
 <body>
 
-{% if current_user.is_authenticated %}
-<p> Top Posts for {{ current_user.username }} </p>
-{% endif %}
+<h3> Top posts </h3>
+<br>
 
 <a href='/subchoice'> Home </a>
 
-<br>
-
-<div>
-
   <table>
     <tr>
-    {% for post in data[0:5] %}
-    <td>
-        <p> {{ post['score'] }} </p>
-        <a href="{{post['url']}}" name='post'> {{ post['title'] }} </a>
-        <br>
-        <a href='#' id='add_to_favorites'><button> Add To Favorites </button></a>
-    </td>
-    {% endfor %}
-  </tr>
-  <br>
-  <tr>
-
-  {% for post in data[4:9] %}
-  <td>
-    {{ post['score'] }}
-
-    <a href="{{post['url']}}"> {{ post['title'] }} </a>
-
-  </td>
-  {% endfor %}
-
-  </tr>
-  <br>
-  <tr>
-
-  {% for post in data[9:14] %}
-  <td>
-    {{ post['score'] }}
-
-    <a href="{{post['url']}}"> {{ post['title'] }} </a>
-
-  </td>
-  {% endfor %}
-
-</tr>
-
-
+      {% for post in data[0:5] %}
+      <td>
+        <div >
+          <p id="{{post['title']}}"> {{ post['title'] }} </p>
+          <p id="{{ post['score'] }}"> {{ post['score'] }} </p>
+          <p id="{{ post['url'] }}"> {{ post['url'] }} </p>
+        </div>
+        <div> <a href='#' id="{{data.index(post)}}" class='add_to_favorites' name='post'><button> Add To Favorites </button></a> </div>
+      </td>
+      {% endfor %}
+    </tr>
   </table>
 
-
-</div>
-
-
-
-
-
-
 </body>
-
-</html>

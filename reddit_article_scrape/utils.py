@@ -1,4 +1,4 @@
-from flask import render_template, abort, request, flash, redirect, url_for
+from flask import render_template, abort, request, flash, redirect, url_for, session
 import requests
 from flask_mail import Message
 from reddit_article_scrape import mail, db
@@ -12,34 +12,33 @@ def send_mail(email, message):
     msg.html = render_template('result.html', data=message)
     mail.send(msg)
 
-def get_info():
-    url = request.form.get('sub')
-    if not url:
+def get_info(subreddit):
+    if not subreddit:
         abort(404)
-    a = requests.get('https://api.reddit.com/r/' + url, headers={'User-agent': 'putain-quoi'}).json()
+        return render_template('none_found.html')
+    a = requests.get('https://api.reddit.com/r/' + subreddit, headers={'User-agent': 'putain-quoi'}).json()
     children = a.get('data', {}).get('children')
     if not children:
         return "There was an error", 502
 
     post_list = [ { key: post['data'][key] for key in post['data'] if key in ('title', 'url', 'score') } for post in children]
     final = sorted(post_list, key=lambda k: k['score'], reverse=True)
+    session['final'] = final
 
     return final
 
-def show_posts():
-    data = get_info()
-    email = request.form.get('email')
 
-    try:
-        send_mail(email, data)
-    except Exception:
-        print("Sending mail as failed")
+def find_post(spot):
+    data = session.get('final')
+    spot = data[spot]
+    print spot
+    fav= Favorite(title=spot.get('title'), url=spot.get('url'), score=spot.get('score'), user_id=current_user.id)
+    db.session.add(fav)
+    db.session.commit()
 
-    return render_template('result.html', data=data)
 
-def save_post(data):
+def save_post():
     data = request.form.get('post')
-    #post = data[post]
     fav= Favorite(title=data.get('title'), url=data.get('url'), score=data.get('score'), user_id=current_user.id)
     db.session.add(fav)
     db.session.commit()

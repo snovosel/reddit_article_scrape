@@ -1,6 +1,6 @@
-from flask import render_template, redirect, url_for, abort, request
+from flask import render_template, redirect, url_for, abort, request, session
 from reddit_article_scrape import app, db
-from reddit_article_scrape.utils import send_mail, get_info, login, create_user, show_posts
+from reddit_article_scrape.utils import send_mail, get_info, login, create_user, find_post
 from reddit_article_scrape.models import User, Favorite
 from flask_login import login_required, logout_user, current_user
 
@@ -28,7 +28,18 @@ def favorites():
 
 @app.route('/result', methods=['POST'])
 def result():
-    return show_posts()
+    subreddit = request.form.get('sub')
+    email = request.form.get('email')
+
+    data = get_info(subreddit)
+
+    try:
+        send_mail(email, data)
+    except Exception:
+        print("Sending mail as failed")
+
+    return render_template('result.html', data=data)
+
 
 @app.route('/signout')
 @login_required
@@ -36,10 +47,8 @@ def signout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('/add_to_favorites/<post>', methods=['GET', 'POST'])
+@app.route('/add_to_favorites/<int:post>', methods=['GET', 'POST'])
 def add_to_favorites(post):
-    data = get_info()
-    post = data[post]
-    fav= Favorite(title=data.get('title'), url=data.get('url'), score=data.get('score'), user_id=current_user.id)
-    db.session.add(fav)
-    db.session.commit()
+    print post
+    find_post(post)
+    return redirect(url_for('subchoice'))
