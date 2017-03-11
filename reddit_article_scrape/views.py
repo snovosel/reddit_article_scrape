@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, abort, request, session
 from reddit_article_scrape import app, db
-from reddit_article_scrape.utils import send_mail, get_info, login, create_user, find_post
+from reddit_article_scrape.utils import send_mail, get_info, login, create_user, add_fav, delete_fav
 from reddit_article_scrape.models import User, Favorite
 from flask_login import login_required, logout_user, current_user
 
@@ -16,8 +16,6 @@ def register():
 @app.route('/subchoice')
 @login_required
 def subchoice():
-    '''if 'final' in session:
-        session.pop('final')'''
     return render_template('subchoice.html')
 
 @app.route('/favorites')
@@ -52,5 +50,10 @@ def signout():
 @app.route('/add_to_favorites/<int:post>', methods=['GET', 'POST'])
 def add_to_favorites(post):
     print post
-    find_post(post)
+    add_fav(post)
+    return redirect(url_for('subchoice'))
+
+@app.route('/delete_favorite/<int:post>', methods=['GET', 'POST'])
+def delete_favorite(post):
+    delete_fav(post)
     return redirect(url_for('subchoice'))

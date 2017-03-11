@@ -28,12 +28,20 @@ def get_info(subreddit):
     session['final'] = final
     return final
 
-def find_post(spot):
+def add_fav(spot):
     data = session.get('final')
     spot = data[spot]
     print spot
     fav= Favorite(title=spot.get('title'), url=spot.get('url'), score=spot.get('score'), user_id=current_user.id)
     db.session.add(fav)
+    db.session.commit()
+
+def delete_fav(fav):
+    #post = Favorite.query.all()
+    #fav = post[fav]
+    post = db.session.query(Favorite).get(fav)
+    print post.title
+    db.session.delete(post)
     db.session.commit()
 
 

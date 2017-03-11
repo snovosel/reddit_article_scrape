@@ -2,6 +2,28 @@
 
 <head>
   <title> Favorites </title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script type=text/javascript>
+
+    $(function() {
+      $('a.delete_fav').bind('click', function() {
+
+        var post = $(this).attr('id')
+
+        $.ajax({
+
+            type : 'POST',
+            url : '/delete_favorite' + '/' + post,
+
+        });
+
+        console.log(post)
+
+      });
+    });
+  </script>
+
 </head>
 
 <body>
@@ -18,7 +40,11 @@
   <div>
     {% for favorite in current_user.favorites.all() %}
     <ul>
-      <li><a href='{{favorite.url}}'> {{ favorite.title }}  </li>
+      <li>
+        <a href='{{favorite.url}}'> {{ favorite.title }}
+        <a href='#' id="{{ favorite.id }}" class='delete_fav'><button> Delete </button></a>
+      </li>
+
     </ul>
     {% endfor %}
   </div>
