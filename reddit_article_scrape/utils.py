@@ -13,6 +13,7 @@ def send_mail(email, message):
     mail.send(msg)
 
 def get_info(subreddit):
+    session.pop('final', None)
     if not subreddit:
         abort(404)
         return render_template('none_found.html')
@@ -22,24 +23,16 @@ def get_info(subreddit):
         return "There was an error", 502
 
     post_list = [ { key: post['data'][key] for key in post['data'] if key in ('title', 'url', 'score') } for post in children]
+
     final = sorted(post_list, key=lambda k: k['score'], reverse=True)
     session['final'] = final
-
     return final
-
 
 def find_post(spot):
     data = session.get('final')
     spot = data[spot]
     print spot
     fav= Favorite(title=spot.get('title'), url=spot.get('url'), score=spot.get('score'), user_id=current_user.id)
-    db.session.add(fav)
-    db.session.commit()
-
-
-def save_post():
-    data = request.form.get('post')
-    fav= Favorite(title=data.get('title'), url=data.get('url'), score=data.get('score'), user_id=current_user.id)
     db.session.add(fav)
     db.session.commit()
 

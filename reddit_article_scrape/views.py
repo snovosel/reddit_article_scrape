@@ -16,6 +16,8 @@ def register():
 @app.route('/subchoice')
 @login_required
 def subchoice():
+    '''if 'final' in session:
+        session.pop('final')'''
     return render_template('subchoice.html')
 
 @app.route('/favorites')
