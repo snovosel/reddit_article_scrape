@@ -5,7 +5,7 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script type=text/javascript>
-  
+
     $(function() {
       $('a.add_to_favorites').bind('click', function() {
 
@@ -37,9 +37,8 @@
       {% for post in data[0:5] %}
       <td>
         <div >
-          <p id="{{post['title']}}"> {{ post['title'] }} </p>
+          <a href="{{ post['url'] }}" id="{{post['title']}}"> {{ post['title'] }} </a>
           <p id="{{ post['score'] }}"> {{ post['score'] }} </p>
-          <p id="{{ post['url'] }}"> {{ post['url'] }} </p>
         </div>
         <div> <a href='#' id="{{data.index(post)}}" class='add_to_favorites' name='post'><button> Add To Favorites </button></a> </div>
       </td>

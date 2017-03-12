@@ -37,8 +37,6 @@ def add_fav(spot):
     db.session.commit()
 
 def delete_fav(fav):
-    #post = Favorite.query.all()
-    #fav = post[fav]
     post = db.session.query(Favorite).get(fav)
     print post.title
     db.session.delete(post)
@@ -53,7 +51,7 @@ def login():
             login_user(user)
 
             return redirect(url_for('subchoice'))
-
+            
         else:
             print "incorrect pass"
             return redirect(url_for('index'))
