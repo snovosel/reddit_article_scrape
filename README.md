@@ -9,3 +9,7 @@ in python interpreter:
 
   1. from reddit_article_scrape import db
   2. db.create_all()
+
+TO SET FLASK APP VARIABLE:
+
+  1. export FLASK_APP=reddit_article_scrape
