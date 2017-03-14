@@ -1,7 +1,7 @@
-from flask import render_template, redirect, url_for, abort, request, session
+from flask import render_template, redirect, url_for, abort, request
 from reddit_article_scrape import app, db
 from reddit_article_scrape.utils import send_mail, get_info, login, create_user, add_fav, delete_fav
-from reddit_article_scrape.models import User, Favorite
+from reddit_article_scrape.models import User, Post
 from flask_login import login_required, logout_user, current_user
 
 
@@ -21,10 +21,10 @@ def subchoice():
 @app.route('/favorites')
 @login_required
 def favorites():
-    favorite = Favorite.query.get(current_user.id)
-    if favorite == None:
-        return render_template('none_found.html')
-    return render_template('favorites.html', favorite=favorite)
+    posts = Post.query.all()
+    '''if post.favorite == None:
+        return render_template('none_found.html')'''
+    return render_template('favorites.html', posts=posts)
 
 @app.route('/result', methods=['POST'])
 def result():
@@ -33,12 +33,14 @@ def result():
 
     data = get_info(subreddit)
 
+    posts = Post.query.all()
+
     try:
         send_mail(email, data)
     except Exception:
         print("Sending mail as failed")
 
-    return render_template('result.html', data=data)
+    return render_template('result.html', data=data, posts=posts)
 
 
 @app.route('/signout')

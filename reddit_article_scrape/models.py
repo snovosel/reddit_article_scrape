@@ -7,7 +7,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(128), index=True, unique=True)
     password= db.Column(db.String(128))
-    favorites = db.relationship('Favorite', backref='user', lazy='dynamic')
+    post = db.relationship('Post', backref='user', lazy='dynamic')
 
     def __init__(self, username, email, password):
         self.username = username
@@ -26,10 +26,10 @@ class User(db.Model, UserMixin):
 def load_user(userid):
     return User.query.filter(User.id == userid).first()
 
-
-class Favorite(db.Model):
+class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100))
-    url = db.Column(db.String(150))
+    title = db.Column(db.String())
+    url = db.Column(db.String())
     score = db.Column(db.Integer)
+    favorite = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))

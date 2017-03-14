@@ -38,14 +38,16 @@
 
 
   <div>
-    {% for favorite in current_user.favorites.all() %}
+    {% for post in posts %}
+    {% if post.favorite == True %}
     <ul>
       <li>
-        <a href='{{favorite.url}}'> {{ favorite.title }}
-        <a href='#' id="{{ favorite.id }}" class='delete_fav'><button> Delete </button></a>
+        <a href='{{post.url}}'> {{ post.title }} </a>
+        <a href='#' id="{{ post.id }}" class='delete_fav'><button> Delete </button></a>
       </li>
 
     </ul>
+    {% endif %}
     {% endfor %}
   </div>
 
