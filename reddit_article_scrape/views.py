@@ -1,8 +1,9 @@
-from flask import render_template, redirect, url_for, abort, request
-from reddit_article_scrape import app, db
-from reddit_article_scrape.utils import send_mail, get_info, login, create_user, add_fav, delete_fav
-from reddit_article_scrape.models import User, Post
+from flask import render_template, redirect, url_for, abort, request, jsonify, json
+from reddit_article_scrape import app, db, reddit
+from reddit_article_scrape.utils import send_mail, get_info, login, create_user, serialize_post
+from reddit_article_scrape.models import User, Favorite
 from flask_login import login_required, logout_user, current_user
+import pdb
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -21,41 +22,36 @@ def subchoice():
 @app.route('/favorites')
 @login_required
 def favorites():
-    posts = Post.query.all()
-    '''if post.favorite == None:
-        return render_template('none_found.html')'''
-    return render_template('favorites.html', posts=posts)
+    favs = Favorite.query.all()
+    if favs == None:
+        return render_template('none_found.html')
+    return render_template('favorites_ajax.html')
 
-@app.route('/result', methods=['POST'])
-def result():
-    subreddit = request.form.get('sub')
-    email = request.form.get('email')
 
-    data = get_info(subreddit)
+@app.route('/rpost', methods=['GET'])
+def get_rpost():
+    subreddit = request.args.get('q')
+    if subreddit:
+        data = get_info(subreddit)
+        final = jsonify( [ serialize_post(post) for post in data ] )
+        return final
 
-    posts = Post.query.all()
+@app.route('/favorite', methods=['POST'])
+def add_favorite():
+    #pdb.set_trace()
+    parameters = request.get_json(force=True)
 
-    try:
-        send_mail(email, data)
-    except Exception:
-        print("Sending mail as failed")
+    post_id = parameters.get('post_id')
+    if post_id:
+        submission = reddit.submission(id=post_id)
 
-    return render_template('result.html', data=data, posts=posts)
-
+        favorite = Favorite.from_submission(submission)
+        db.session.add(favorite)
+        db.session.commit()
+        return '', 201
 
 @app.route('/signout')
 @login_required
 def signout():
     logout_user()
     return redirect(url_for('index'))
-
-@app.route('/add_to_favorites/<int:post>', methods=['GET', 'POST'])
-def add_to_favorites(post):
-    print post
-    add_fav(post)
-    return redirect(url_for('subchoice'))
-
-@app.route('/delete_favorite/<int:post>', methods=['GET', 'POST'])
-def delete_favorite(post):
-    delete_fav(post)
-    return redirect(url_for('subchoice'))

@@ -2,6 +2,78 @@
 
 <head>
   <title> Top Posts </title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function(){
+        // click on button submit
+        $("#submit").click(function() {
+          var subreddit = $('#sub').val();
+            // send ajax
+            $.ajax({
+                url: '/rpost', // url where to submit the request
+                type : "GET", // type of action POST || GET
+                dataType : 'json', // data type
+                data : {q: subreddit}, // post data || get data
+                success : function(result) {
+                  populate_table(result);
+
+                    // you can see the result from the console
+                    // tab of the developer tools
+                    console.log(result);
+                },
+                error: function(xhr, resp, text) {
+                    console.log(xhr, resp, text);
+                }
+            })
+            return false;
+        });
+    });
+
+function populate_table(result) {
+
+  $.each(result, function(i, item) {
+
+    var $tr = $('<tr>').append(
+            $('<td>').html("<button class='favorite' id=" + item.id + "> Add to favorites </button>"),
+            $('<td>').html("<a href=" + item.url + ">" + item.title + "</a>"),
+            $('<td>').html(item.score)
+    ).appendTo('#records_table');
+
+  });
+
+  $(".favorite").click(function() {
+    var post = $(this).attr('id')
+    console.log(post);
+      // send ajax
+      $.ajax({
+          url: '/favorite', // url where to submit the request
+          type : "POST", // type of action POST || GET
+          dataType : 'json', // data type
+          contentType: "application/json",
+          data : JSON.stringify({
+                          'post_id': post
+                           }), // post data || get data
+          success : function(result) {
+              // you can see the result from the console
+              // tab of the developer tools
+              console.log(result);
+          },
+          error: function(xhr, resp, text) {
+              console.log(xhr, resp, text);
+          }
+      });
+      return false;
+
+  });
+
+};
+
+
+
+
+
+</script>
 </head>
 
 <body>
@@ -13,10 +85,10 @@
 <a href='/favorites'> Favorites </a>
 
 <div>
-  <form action='/result' method='POST'>
+  <form action='' method='POST'>
     <p> enter your desired sub, NO SPACES! </p>
-    <input type='text' name='sub'>
-    <input type='submit' name='my-form' value='send'>
+    <input type='text' name='sub' id='sub'>
+    <input type='submit' id='submit' name='submit' value='send'>
 
   <br>
 
@@ -33,6 +105,10 @@
 <br>
 
 <a href='/signout'> SignOut </a>
+
+
+<table id='records_table'>
+</table>
 
 </body>
 

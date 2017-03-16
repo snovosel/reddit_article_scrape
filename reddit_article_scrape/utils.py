@@ -1,51 +1,23 @@
 from flask import render_template, abort, request, flash, redirect, url_for
 import requests
 from flask_mail import Message
-from reddit_article_scrape import mail, db
+from reddit_article_scrape import mail, db, reddit
 from reddit_article_scrape.forms import LoginForm, RegistrationForm
-from reddit_article_scrape.models import User, Post
+from reddit_article_scrape.models import User, Favorite
 from flask_login import login_required, login_user, logout_user, current_user
 
 
 def send_mail(email, message):
+    return True
     msg = Message(recipients=[email])
     msg.html = render_template('result.html', data=message)
     mail.send(msg)
 
 def get_info(subreddit):
-    if not subreddit:
-        abort(404)
-        return render_template('none_found.html')
-    a = requests.get('https://api.reddit.com/r/' + subreddit, headers={'User-agent': 'putain-quoi'}).json()
-    children = a.get('data', {}).get('children')
-    if not children:
-        return "There was an error", 502
+    return reddit.subreddit(subreddit).hot(limit=10)
 
-    post_list = [ { key: post['data'][key] for key in post['data'] if key in ('title', 'url', 'score') } for post in children]
-
-    final = sorted(post_list, key=lambda k: k['score'], reverse=True)
-
-    for post in final:
-        saved_post = Post(title=post.get('title'), url=post.get('url'), score=post.get('score'))
-        db.session.add(saved_post)
-        db.session.commit()
-
-    return final
-
-def add_fav(spot):
-    data = Post.query.get(spot)
-    data.favorite = True
-    print data.title
-    db.session.commit()
-
-
-def delete_fav(fav):
-    post = db.session.query(Post).get(fav)
-    print post.title
-    print post.id
-    db.session.delete(post)
-    db.session.commit()
-
+def serialize_post(post):
+    return dict(title=post.title, score=post.score, id=post.id, url=post.url)
 
 def login():
     form = LoginForm(request.form)
