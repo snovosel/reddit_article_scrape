@@ -4,51 +4,92 @@
   <title> Favorites </title>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
   <script type=text/javascript>
 
-    $(function() {
-      $('a.delete_fav').bind('click', function() {
+  $(document).ready(function() {
 
-        var post = $(this).attr('id')
+        // send ajax
+          $.ajax({
+              url: '/favorites', // url where to submit the request
+              type : "GET", // type of action POST || GET
+              dataType : 'json', // data type
+              success : function(data) {
+                populate_list(data);
+                  // you can see the result from the console
+                  // tab of the developer tools
 
-        $.ajax({
+              },
+              error: function(xhr, resp, text) {
+                  console.log(xhr, resp, text);
+              }
+          });
 
-            type : 'POST',
-            url : '/delete_favorite' + '/' + post,
 
-        });
 
-        console.log(post)
+
+    function populate_list(data) {
+      $.each(data, function(i, item) {
+
+        var $ul = $('<ul>').append(
+                $('<li>').html("<button class='delete_favorite' id=" + item.id + "> Delete Favorite </button>"),
+                $('<li>').html("<a href=" + item.url + ">" + item.title + "</a>"),
+                $('<li>').html(item.score)
+        ).appendTo('#container');
 
       });
-    });
+
+
+
+      $(".delete_favorite").click(function() {
+        var favorite = $(this).attr('id')
+          // send ajax
+          $.ajax({
+              url: '/favorites/', // url where to submit the request
+              type : 'DELETE', // type of action POST || GET
+              dataType : 'json', // data type
+              contentType: "application/json",
+              data: JSON.stringify({
+                              'favorite': favorite
+                               }), // post data || get data
+              success : function(result) {
+                  // you can see the result from the console
+                  // tab of the developer tools
+                  console.log(result);
+              },
+              error: function(xhr, resp, text) {
+                  console.log(xhr, resp, text);
+              }
+          });
+          return false;
+
+      });
+
+    };
+
+
+
+
+
+
+
+  });
+
   </script>
 
 </head>
 
 <body>
 
-<div>
+<div id="container">
+  <ul id="favorites_list">
 
-  <div>
-    {% if current_user.is_authenticated %}
-    <p> Favorites for {{ current_user.username }} </p>
-    {% endif %}
-  </div>
+  </ul>
 
+</div>
 
-  <div>
-    {% for post in posts %}
-    {% if post.favorite == True %}
-    <ul>
-      <li>
-        <a href='{{post.url}}'> {{ post.title }} </a>
-        <a href='#' id="{{ post.id }}" class='delete_fav'><button> Delete </button></a>
-      </li>
+<a href="/subchoice"> Back </a>
 
-    </ul>
-    {% endif %}
-    {% endfor %}
-  </div>
+</body>
 
-  <a href="/subchoice"> Back </a>
+</html>

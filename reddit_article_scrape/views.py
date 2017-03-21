@@ -19,14 +19,24 @@ def register():
 def subchoice():
     return render_template('subchoice.html')
 
+@app.route('/favs')
+def favs():
+    return render_template('favorites.html')
+
 @app.route('/favorites')
 @login_required
 def favorites():
-    favs = Favorite.query.all()
-    if favs == None:
-        return render_template('none_found.html')
-    return render_template('favorites_ajax.html')
+    return jsonify( [ favorite.to_dict() for favorite in Favorite.query.all() ] )
 
+@app.route('/favorites/', methods=['DELETE'])
+def delete_favorite():
+    parameters = request.get_json()
+    fav_id = parameters.get('favorite')
+    if fav_id:
+        f = Favorite.query.get_or_404(fav_id)
+        db.session.delete(f)
+        db.session.commit()
+        return '', 201
 
 @app.route('/rpost', methods=['GET'])
 def get_rpost():
@@ -38,7 +48,6 @@ def get_rpost():
 
 @app.route('/favorite', methods=['POST'])
 def add_favorite():
-    #pdb.set_trace()
     parameters = request.get_json(force=True)
 
     post_id = parameters.get('post_id')

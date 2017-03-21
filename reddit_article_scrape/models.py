@@ -33,6 +33,9 @@ class Favorite(db.Model):
     score = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    def to_dict(self):
+        return dict(id= self.id, title= self.title, url= self.url, score= self.score)
+
     @classmethod
     def from_submission(cls, submission):
         return cls(title=submission.title, url=submission.url, score=submission.score, user_id=current_user.id)

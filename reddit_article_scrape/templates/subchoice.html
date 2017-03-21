@@ -9,6 +9,9 @@
         // click on button submit
         $("#submit").click(function() {
           var subreddit = $('#sub').val();
+          var posts_list = $('.post');
+
+          $(posts_list).remove();
             // send ajax
             $.ajax({
                 url: '/rpost', // url where to submit the request
@@ -34,7 +37,8 @@ function populate_table(result) {
 
   $.each(result, function(i, item) {
 
-    var $tr = $('<tr>').append(
+
+    var $tr = $('<tr class="post">').append(
             $('<td>').html("<button class='favorite' id=" + item.id + "> Add to favorites </button>"),
             $('<td>').html("<a href=" + item.url + ">" + item.title + "</a>"),
             $('<td>').html(item.score)
@@ -82,7 +86,7 @@ function populate_table(result) {
 <p> Welcome, {{ current_user.username }} </p>
 {% endif %}
 
-<a href='/favorites'> Favorites </a>
+<a href='/favs'> Favorites </a>
 
 <div>
   <form action='' method='POST'>
@@ -108,6 +112,7 @@ function populate_table(result) {
 
 
 <table id='records_table'>
+
 </table>
 
 </body>
