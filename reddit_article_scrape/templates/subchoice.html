@@ -67,6 +67,7 @@ function populate_table(result) {
               console.log(xhr, resp, text);
           }
       });
+      $(this).parent().closest('tr').remove();
       return false;
 
   });

@@ -31,7 +31,7 @@
     function populate_list(data) {
       $.each(data, function(i, item) {
 
-        var $ul = $('<ul>').append(
+        var $ul = $("<ul> ").append(
                 $('<li>').html("<button class='delete_favorite' id=" + item.id + "> Delete Favorite </button>"),
                 $('<li>').html("<a href=" + item.url + ">" + item.title + "</a>"),
                 $('<li>').html(item.score)
@@ -42,7 +42,8 @@
 
 
       $(".delete_favorite").click(function() {
-        var favorite = $(this).attr('id')
+        var post = $(this).attr('id');
+        console.log(post);
           // send ajax
           $.ajax({
               url: '/favorites/', // url where to submit the request
@@ -50,27 +51,31 @@
               dataType : 'json', // data type
               contentType: "application/json",
               data: JSON.stringify({
-                              'favorite': favorite
+                              'favorite': post
                                }), // post data || get data
               success : function(result) {
                   // you can see the result from the console
                   // tab of the developer tools
-                  console.log(result);
+
+
+                  //console.log(post);
+
               },
               error: function(xhr, resp, text) {
                   console.log(xhr, resp, text);
               }
           });
+
+          $(this).parent().closest('ul').remove();
+
           return false;
 
       });
 
+
+
+
     };
-
-
-
-
-
 
 
   });
@@ -82,9 +87,7 @@
 <body>
 
 <div id="container">
-  <ul id="favorites_list">
 
-  </ul>
 
 </div>
 

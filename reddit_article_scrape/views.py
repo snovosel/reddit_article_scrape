@@ -20,15 +20,17 @@ def subchoice():
     return render_template('subchoice.html')
 
 @app.route('/favs')
+@login_required
 def favs():
     return render_template('favorites.html')
 
 @app.route('/favorites')
 @login_required
 def favorites():
-    return jsonify( [ favorite.to_dict() for favorite in Favorite.query.all() ] )
+    return jsonify( [ favorite.to_dict() for favorite in current_user.favorites.all() ] )
 
 @app.route('/favorites/', methods=['DELETE'])
+@login_required
 def delete_favorite():
     parameters = request.get_json()
     fav_id = parameters.get('favorite')
@@ -58,6 +60,7 @@ def add_favorite():
         db.session.add(favorite)
         db.session.commit()
         return '', 201
+
 
 @app.route('/signout')
 @login_required
