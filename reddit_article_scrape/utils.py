@@ -22,8 +22,11 @@ def serialize_post(post):
 def login():
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
-        user = User.query.filter_by(username=form.username.data).first_or_404()
-        if user.is_correct_password(form.password.data):
+        user = User.query.filter_by(username=form.username.data).first()
+        if user == None:
+            return render_template('invalid_login.html')
+
+        elif user.is_correct_password(form.password.data):
             login_user(user)
 
             return redirect(url_for('subchoice'))
@@ -38,8 +41,14 @@ def create_user():
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
         user = User(form.username.data, form.email.data, form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        print user.username
-        return redirect(url_for('index'))
+
+        try:
+            db.session.add(user)
+            db.session.commit()
+            print user.username
+            return redirect(url_for('index'))
+
+        except:
+            return render_template('duplicate.html')
+
     return render_template('register.html', form=form)

@@ -61,7 +61,6 @@ def add_favorite():
         db.session.commit()
         return '', 201
 
-
 @app.route('/signout')
 @login_required
 def signout():
