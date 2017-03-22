@@ -7,6 +7,7 @@ Flask==0.12
 Flask-Bcrypt==0.7.1
 Flask-Login==0.4.0
 Flask-Mail==0.9.1
+Flask-Script==2.0.5
 Flask-SQLAlchemy==2.2
 Flask-WTF==0.14.2
 itsdangerous==0.24
@@ -14,6 +15,8 @@ Jinja2==2.9.5
 MarkupSafe==0.23
 packaging==16.8
 pkg-resources==0.0.0
+praw==4.4.0
+prawcore==0.8.0
 pycparser==2.17
 pyparsing==2.1.10
 python-gnupg==0.4.0
@@ -21,5 +24,6 @@ PyYAML==3.12
 requests==2.13.0
 six==1.10.0
 SQLAlchemy==1.1.6
+update-checker==0.16
 Werkzeug==0.11.15
 WTForms==2.1
