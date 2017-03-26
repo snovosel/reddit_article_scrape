@@ -1,97 +1,109 @@
 <!DOCTYPE html>
 
 <head>
-  <title> Favorites </title>
+    <title> Favorites </title>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/custom.css" rel="stylesheet">
 
-  <script type=text/javascript>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
-  $(document).ready(function() {
+    <script type=text/javascript>
+        $(document).ready(function() {
 
-        // send ajax
-          $.ajax({
-              url: '/favorites', // url where to submit the request
-              type : "GET", // type of action POST || GET
-              dataType : 'json', // data type
-              success : function(data) {
-                populate_list(data);
-                  // you can see the result from the console
-                  // tab of the developer tools
+            // send ajax
+            $.ajax({
+                url: '/favorites', // url where to submit the request
+                type: "GET", // type of action POST || GET
+                dataType: 'json', // data type
+                success: function(data) {
+                    populate_list(data);
+                    // you can see the result from the console
+                    // tab of the developer tools
 
-              },
-              error: function(xhr, resp, text) {
-                  console.log(xhr, resp, text);
-              }
-          });
-
-
-
-
-    function populate_list(data) {
-      $.each(data, function(i, item) {
-
-        var $ul = $("<ul> ").append(
-                $('<li>').html("<button class='delete_favorite' id=" + item.id + "> Delete Favorite </button>"),
-                $('<li>').html("<a href=" + item.url + ">" + item.title + "</a>"),
-                $('<li>').html(item.score)
-        ).appendTo('#container');
-
-      });
-
-
-
-      $(".delete_favorite").click(function() {
-        var post = $(this).attr('id');
-        console.log(post);
-          // send ajax
-          $.ajax({
-              url: '/favorites/', // url where to submit the request
-              type : 'DELETE', // type of action POST || GET
-              dataType : 'json', // data type
-              contentType: "application/json",
-              data: JSON.stringify({
-                              'favorite': post
-                               }), // post data || get data
-              success : function(result) {
-                  // you can see the result from the console
-                  // tab of the developer tools
-
-
-                  //console.log(post);
-
-              },
-              error: function(xhr, resp, text) {
-                  console.log(xhr, resp, text);
-              }
-          });
-
-          $(this).parent().closest('ul').remove();
-
-          return false;
-
-      });
+                },
+                error: function(xhr, resp, text) {
+                    console.log(xhr, resp, text);
+                }
+            });
 
 
 
 
-    };
+            function populate_list(data) {
+                $.each(data, function(i, item) {
+
+                    var $tr = $('<tr class="favorite-list">').append(
+                        $('<td class="delete-button">').html("<button class='delete-favorite btn btn-primary btn-lg' id=" + item.id + "> Delete </button>"),
+                        $('<td class="title">').html("<a href=" + item.url + ">" + item.title + "</a>")
+                    ).appendTo('#favorites-table');
+
+                });
 
 
-  });
 
-  </script>
+                $(".delete-favorite").click(function() {
+                    var post = $(this).attr('id');
+                    console.log(post);
+                    // send ajax
+                    $.ajax({
+                        url: '/favorites/', // url where to submit the request
+                        type: 'DELETE', // type of action POST || GET
+                        dataType: 'json', // data type
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            'favorite': post
+                        }), // post data || get data
+                        success: function(result) {
+                            // you can see the result from the console
+                            // tab of the developer tools
+
+
+                            //console.log(post);
+
+                        },
+                        error: function(xhr, resp, text) {
+                            console.log(xhr, resp, text);
+                        }
+                    });
+
+                    $(this).parent().closest('tr').remove();
+
+                    return false;
+
+                });
+
+
+
+
+            };
+
+
+        });
+    </script>
 
 </head>
 
 <body>
 
-<div id="container">
+    {% if current_user.is_authenticated %}
+    <p id="welcome-header"> Favorites for {{ current_user.username }} </p>
+    {% endif %}
 
 
-</div>
 
-<a href="/subchoice"> Back </a>
+    <div class="container" id='container-large'>
+        <table id="favorites-table">
+
+        </table>
+
+    </div>
+
+    <a href="/subchoice" id="back">Back</a>
+
+
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/custom.js"></script>
 
 </body>
 

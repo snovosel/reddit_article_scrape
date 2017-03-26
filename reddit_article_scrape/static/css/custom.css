@@ -1,0 +1,160 @@
+body {
+  background: #42b576;
+  opacity: 30%;
+}
+
+.container {
+  text-align: center;
+
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+
+}
+
+#container-large {
+  width: 1200px;
+  height: 825px;
+  position: relative;
+
+  background: #FDFDFD;
+  box-shadow: 1px 1px 2.5px 0.5px #808080;
+
+  overflow: auto;
+}
+
+#container-index {
+  width: 400px;
+  height: 400px;
+  position: absolute;
+
+  background: #FDFDFD;
+  box-shadow: 0.5px 0.5px 2px 0.5px #808080;
+}
+
+#index-header{
+  color: #79addc;
+  margin-top: 35px;
+  font-size: 35px;
+}
+
+.input-group {
+  padding: 20px;
+  position: relative;
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 17px;
+  width: 350px;
+}
+
+.input-group .index-forms {
+  margin-bottom: 10px;
+}
+
+.repeat-password {
+  margin-bottom: 0px;
+}
+
+.form-control {
+  text-align: center;
+  width: 125px;
+}
+
+.btn {
+  font-size: 15px;
+  vertical-align: middle;
+  text-align: center;
+  width: 90px;
+  border: none;
+  background-color: #42b576;
+  color: #FDFDFD;
+}
+
+#login-button {
+  margin-top: 25px;
+}
+
+#register-button {
+  margin-bottom: 10px;
+}
+
+.register {
+  margin-top: 40px;
+}
+
+.register a {
+  padding-left: 5px;
+}
+
+#welcome-header{
+  font-size: 22px;
+  color: #FDFDFD;
+  margin-left: 15px;
+  margin-top: 5px;
+}
+
+.navbar {
+  width: 100%;
+  background: none;
+  border: none;
+}
+
+#main-menu {
+  float: right;
+  margin-top: 25px;
+}
+
+#main-menu * {
+  display: inline-block;
+}
+
+#sub {
+  margin-right: 20px;
+  width: 150px;
+}
+
+#subchoice-email {
+  float: left;
+  margin-left: 50px;
+}
+
+#email-input {
+  width: 150px;
+  margin-top: 25px;
+}
+
+td {
+  padding: 15px;
+}
+
+.title {
+  text-align: left;
+  color: #2f77b6;
+}
+
+#favorites-table {
+  margin-top: 20px;
+}
+
+
+#error-container {
+  width: 400px;
+  margin: 0 auto;
+  margin-top: 200px;
+  text-align: center;
+}
+
+.error-landing-header {
+  color: #FDFDFD;
+  font-size: 22px;
+}
+
+#back {
+  color: #FDFDFD;
+  display: block;
+  font-size: 22px;
+  margin-left: 15px;
+  margin-top: 15px;
+}

@@ -1,120 +1,166 @@
 <!DOCTYPE html>
 
 <head>
-  <title> Top Posts </title>
+    <title> Top Posts </title>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script>
-    $(document).ready(function(){
-        // click on button submit
-        $("#submit").click(function() {
-          var subreddit = $('#sub').val();
-          var posts_list = $('.post');
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/custom.css" rel="stylesheet">
 
-          $(posts_list).remove();
-            // send ajax
-            $.ajax({
-                url: '/rpost', // url where to submit the request
-                type : "GET", // type of action POST || GET
-                dataType : 'json', // data type
-                data : {q: subreddit}, // post data || get data
-                success : function(result) {
-                  populate_table(result);
 
-                    // you can see the result from the console
-                    // tab of the developer tools
-                    console.log(result);
-                },
-                error: function(xhr, resp, text) {
-                    console.log(xhr, resp, text);
-                }
-            })
-            return false;
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // click on button submit
+            $("#submit").click(function() {
+                var subreddit = $('#sub').val();
+                var posts_list = $('.post');
+
+                $(posts_list).remove();
+                // send ajax
+                $.ajax({
+                    url: '/rpost', // url where to submit the request
+                    type: "GET", // type of action POST || GET
+                    dataType: 'json', // data type
+                    data: {
+                        q: subreddit
+                    }, // post data || get data
+                    success: function(result) {
+                        populate_table(result);
+
+                        // you can see the result from the console
+                        // tab of the developer tools
+                        console.log(result);
+                    },
+                    error: function(xhr, resp, text) {
+                        console.log(xhr, resp, text);
+                    }
+                })
+                return false;
+            });
+
+
+            $('.form-submit').submit(function() {
+                var subreddit = $('#sub').val();
+                var posts_list = $('.post');
+
+                $(posts_list).remove();
+                // send ajax
+                $.ajax({
+                    url: '/rpost', // url where to submit the request
+                    type: "GET", // type of action POST || GET
+                    dataType: 'json', // data type
+                    data: {
+                        q: subreddit
+                    }, // post data || get data
+                    success: function(result) {
+                        populate_table(result);
+
+                        // you can see the result from the console
+                        // tab of the developer tools
+                        console.log(result);
+                    },
+                    error: function(xhr, resp, text) {
+                        console.log(xhr, resp, text);
+                    }
+                })
+                return false;
+
+            });
+
+
         });
-    });
 
-function populate_table(result) {
+        function populate_table(result) {
 
-  $.each(result, function(i, item) {
-
-
-    var $tr = $('<tr class="post">').append(
-            $('<td>').html("<button class='favorite' id=" + item.id + "> Add to favorites </button>"),
-            $('<td>').html("<a href=" + item.url + ">" + item.title + "</a>"),
-            $('<td>').html(item.score)
-    ).appendTo('#records_table');
-
-  });
-
-  $(".favorite").click(function() {
-    var post = $(this).attr('id')
-    console.log(post);
-      // send ajax
-      $.ajax({
-          url: '/favorite', // url where to submit the request
-          type : "POST", // type of action POST || GET
-          dataType : 'json', // data type
-          contentType: "application/json",
-          data : JSON.stringify({
-                          'post_id': post
-                           }), // post data || get data
-          success : function(result) {
-              // you can see the result from the console
-              // tab of the developer tools
-              console.log(result);
-          },
-          error: function(xhr, resp, text) {
-              console.log(xhr, resp, text);
-          }
-      });
-      $(this).parent().closest('tr').remove();
-      return false;
-
-  });
-
-};
+            $.each(result, function(i, item) {
 
 
+                var $tr = $('<tr class="post">').append(
+                    $('<td class="favorite-button">').html("<button class='favorite btn btn-primary btn-lg' id=" + item.id + "> Save </button>"),
+                    $('<td class="title">').html("<a href=" + item.url + ">" + item.title + "</a>")
+                ).appendTo('#records-table');
 
 
+            });
 
-</script>
+            $(".favorite").click(function() {
+                var post = $(this).attr('id')
+                console.log(post);
+                // send ajax
+                $.ajax({
+                    url: '/favorite', // url where to submit the request
+                    type: "POST", // type of action POST || GET
+                    dataType: 'json', // data type
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        'post_id': post
+                    }), // post data || get data
+                    success: function(result) {
+                        // you can see the result from the console
+                        // tab of the developer tools
+                        console.log(result);
+                    },
+                    error: function(xhr, resp, text) {
+                        console.log(xhr, resp, text);
+                    }
+                });
+                $(this).parent().closest('tr').remove();
+                return false;
+
+            });
+
+
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 </head>
 
 <body>
 
-{% if current_user.is_authenticated %}
-<p> Welcome, {{ current_user.username }} </p>
-{% endif %}
-
-<a href='/favs'> Favorites </a>
-
-<div>
-  <form action='' method='POST'>
-    <p> enter your desired sub, NO SPACES! </p>
-    <input type='text' name='sub' id='sub'>
-    <input type='submit' id='submit' name='submit' value='send'>
-
-  <br>
-
-    <p> enter your email </p>
-
-    <input type='text' name='email'>
-
-  </form>
+    {% if current_user.is_authenticated %}
+    <p id="welcome-header"> Welcome, {{ current_user.username }} </p>
+    {% endif %}
 
 
-</div>
 
 
-<br>
-
-<a href='/signout'> SignOut </a>
 
 
-<table id='records_table'>
+    <div class="container" id="container-large">
+        <nav class="navbar navbar-default" id='navbar-top'>
+            <div class="form-group" id="main-menu">
+                <form class='form-submit'>
+                    <input type='text' name='sub' id='sub' class='form-control' placeholder="Subreddit">
+                </form>
+                <input type='submit' id='submit' name='submit' value='Search' class='btn btn-primary btn-lg'>
+                <a href='/favs'><button class='btn btn-primary btn-lg'> Favorites</button></a>
+                <a href='/signout'><button class='btn btn-primary btn-lg'> Logout </button></a>
+            </div>
 
-</table>
+            <div class="form-group" id="subchoice-email">
+                <input type='text' name='email' id='email-input' class='form-control' placeholder="Email to yourself">
+            </div>
+        </nav>
+
+        <div class='table-container'>
+            <table id='records-table'>
+                <div class="row">
+
+                </div>
+
+            </table>
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/custom.js"></script>
 
 </body>
 
